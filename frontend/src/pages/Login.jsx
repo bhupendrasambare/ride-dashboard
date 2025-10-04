@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Row, Col, Card, Form, Button, Container } from 'react-bootstrap';
 import { FaCubes } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import useAuthStore from "../store/authStore";
-import api from "../services/api";
 import { toast } from 'react-toastify';
 import LoginBg from "../assets/login-box.jpg"
-import { AUTH_LOGIN, AUTH_REGISTER } from '../services/urls';
 
 const Login = () => {
   const [showLogin, setShowLogin] = useState(true);
@@ -17,24 +14,12 @@ const Login = () => {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
 
-  
-
-  const setToken = useAuthStore((state) => state.setToken);
-
   const navigate = useNavigate();
-  const token = useAuthStore((state) => state.token);
-
-  useEffect(() => {
-    if (token) navigate("/dashboard");
-  }, [token]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post(AUTH_LOGIN, { "username_or_email":email, "password":password });
-      setToken(response.data.access_token);
-      toast.success("Logged in successfully!");
-      navigate("/dashboard")
+
     } catch (err) {
       toast.error("Login failed");
     }
