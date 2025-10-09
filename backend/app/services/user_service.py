@@ -23,7 +23,7 @@ async def find_by_email(email:str):
         "created_at": doc.get("created_at", datetime.utcnow())
     })
 
-async def create_user(email:str, password: str, full_name:str | None == None):
+async def create_user(email:str, password: str, full_name: str | None == None):
     db = get_database()
     hashed = hash_password(password)
     doc = {

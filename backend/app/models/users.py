@@ -5,9 +5,9 @@ from datetime import datetime
 class UserInDb(BaseModel):
     id: Optional[str] = None
     email: EmailStr
-    hashed_password = str
+    hashed_password: str
     full_name: Optional[str] = None
-    is_active = True
+    is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
