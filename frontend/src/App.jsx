@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "./App.css"
 import Login from './pages/Login';
 import { ToastContainer, Zoom } from 'react-toastify';
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
         theme="light"
         transition={Zoom}
       />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
       <Routes>
         <Route path="/login" element={<Login />} />
       </Routes>

@@ -1,228 +1,184 @@
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaFacebook, FaTwitter } from "react-icons/fa";
-import api from "../services/api";
-import { AUTH_LOGIN, AUTH_REGISTER } from "../services/urls";
 import LoginBg from "../assets/login-box.jpg";
 import "../assets/css/login.css";
+import { loginUser, registerUser } from "../services/api";
 
 const Login = () => {
   const [showLogin, setShowLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState({ type: "", message: "" });
 
   const navigate = useNavigate();
 
-  // 🔹 Handle Login
+  // Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post(AUTH_LOGIN, {
-        username,
-        password,
-      });
-      const { access_token } = response.data;
-      localStorage.setItem("token", access_token);
-      toast.success("Login successful");
+      const data = await loginUser(email, password);
+      localStorage.setItem("token", data.access_token);
+      setAlert({ type: "success", message: "Login successful!" });
       navigate("/dashboard");
     } catch (err) {
-      toast.error("Invalid credentials");
+      setAlert({
+        type: "danger",
+        message: err.detail || "Invalid login credentials",
+      });
     }
   };
 
-  // 🔹 Handle Register
+  // Handle registration
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await api.post(AUTH_REGISTER, {
-        username,
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-        role: "Admin",
+      await registerUser(email, password, fullName || username);
+      setAlert({
+        type: "success",
+        message: "Registration successful! Please log in.",
       });
-      toast.success("Registration successful, please log in");
       setShowLogin(true);
     } catch (err) {
-      toast.error("Registration failed");
+      let message = "Registration failed";
+      if (err.detail) {
+        if (Array.isArray(err.detail)) message = err.detail[0].msg;
+        else message = err.detail;
+      }
+      setAlert({ type: "danger", message });
     }
   };
 
   return (
     <div className="login-body">
-      <section className="login-ftco-section">
-        <div className="login-container">
-          <div className="login-wrap">
-            <div
-              className="login-img"
-              style={{
-                backgroundImage: `url(${LoginBg})`,
-              }}
-            ></div>
-
-            <div className="login-login-wrap">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h3 className="mb-4">{showLogin ? "Sign In" : "Register"}</h3>
-                <div className="login-social-media">
-                  <a href="#">
-                    <FaFacebook />
-                  </a>
-                  <a href="#">
-                    <FaTwitter />
-                  </a>
-                </div>
-              </div>
-
-              {/* Conditional form */}
-              {showLogin ? (
-                <form onSubmit={handleLogin} className="signin-form">
-                  <div className="form-group mb-3">
-                    <label className="login-label" htmlFor="username">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      id="username"
-                      className="login-form-control"
-                      placeholder="Username"
-                      required
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <label className="login-label" htmlFor="password">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      className="login-form-control"
-                      placeholder="Password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <button
-                      type="submit"
-                      className="login-btn w-100 rounded submit px-3"
-                    >
-                      Sign In
-                    </button>
-                  </div>
-
-                  <div className="form-group d-flex justify-content-between">
-                    <label className="login-checkbox-wrap">
-                      Remember Me
-                      <input type="checkbox" defaultChecked />
-                      <span className="login-checkmark"></span>
-                    </label>
-                    <a onClick={()=>setShowLogin(false)}>Forgot Password</a>
-                  </div>
-
-                  <p className="login-text-center mt-3">
-                    Not a member?{" "}
-                    <div onClick={() => setShowLogin(false)}>
-                      Sign Up
-                    </div>
-                  </p>
-                </form>
-              ) : (
-                <form onSubmit={handleRegister} className="signin-form">
-                  <div className="form-group mb-3">
-                    <label className="login-label">First Name</label>
-                    <input
-                      type="text"
-                      className="login-form-control"
-                      placeholder="First Name"
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <label className="login-label">Last Name</label>
-                    <input
-                      type="text"
-                      className="login-form-control"
-                      placeholder="Last Name"
-                      required
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <label className="login-label">Username</label>
-                    <input
-                      type="text"
-                      className="login-form-control"
-                      placeholder="Username"
-                      required
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <label className="login-label">Email</label>
-                    <input
-                      type="email"
-                      className="login-form-control"
-                      placeholder="Email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <label className="login-label">Password</label>
-                    <input
-                      type="password"
-                      className="login-form-control"
-                      placeholder="Password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="form-group mb-3">
-                    <button
-                      type="submit"
-                      className="login-btn w-100 rounded submit px-3"
-                    >
-                      Register
-                    </button>
-                  </div>
-
-                  <p className="login-text-center mt-3">
-                    Already a member?{" "}
-                    <a
-                      href="#"
-                      onClick={() => setShowLogin(true)}
-                      style={{ color: "#007bff" }}
-                    >
-                      Sign In
-                    </a>
-                  </p>
-                </form>
-              )}
+      <div className="login-fullpage d-flex align-items-center justify-content-center">
+        <div className="login-wrap shadow-lg rounded overflow-hidden">
+          {/* Left Image */}
+          <div
+            className="login-img"
+            style={{ backgroundImage: `url(${LoginBg})` }}
+          >
+            <div className="login-img-overlay text-white text-center d-flex flex-column justify-content-center">
+              <h2 className="fw-bold display-6">Welcome Back!</h2>
+              <p className="lead">Access your data insights dashboard</p>
             </div>
           </div>
+
+          {/* Right Form */}
+          <div className="login-login-wrap p-5">
+            <h3 className="mb-4 text-center">{showLogin ? "Sign In" : "Register"}</h3>
+
+            {/* Social icons */}
+            <div className="d-flex justify-content-center mb-4 login-social-media">
+              <a href="#"><FaFacebook /></a>
+              <a href="#"><FaTwitter /></a>
+            </div>
+
+            {/* Bootstrap Alert */}
+            {alert.message && (
+              <div
+                className={`alert alert-${alert.type} alert-dismissible fade show`}
+                role="alert"
+              >
+                {alert.message}
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                  onClick={() => setAlert({ type: "", message: "" })}
+                ></button>
+              </div>
+            )}
+
+            {/* Login Form */}
+            {showLogin ? (
+              <form onSubmit={handleLogin}>
+                <div className="form-group mb-3">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="login-form-control"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="login-form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className="login-btn w-100 mb-3">
+                  Sign In
+                </button>
+                <p className="text-center">
+                  Not a member?{" "}
+                  <span
+                    onClick={() => setShowLogin(false)}
+                    className="login-a cursor-pointer"
+                  >
+                    Register
+                  </span>
+                </p>
+              </form>
+            ) : (
+              /* Register Form */
+              <form onSubmit={handleRegister}>
+                <div className="form-group mb-3">
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    className="login-form-control"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="login-form-control"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="login-form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className="login-btn w-100 mb-3">
+                  Register
+                </button>
+                <p className="text-center">
+                  Already a member?{" "}
+                  <span
+                    onClick={() => setShowLogin(true)}
+                    className="login-a cursor-pointer"
+                  >
+                    Sign In
+                  </span>
+                </p>
+              </form>
+            )}
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

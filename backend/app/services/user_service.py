@@ -15,7 +15,7 @@ async def find_by_email(email:str):
     
     doc["id"] = str(doc["_id"])
     return UserInDb(**{
-        "id": str(doc["_id"]),
+        "id": str(doc["id"]),
         "email": doc["email"],
         "hashed_password": doc["hashed_password"],
         "full_name": doc.get("full_name"),
