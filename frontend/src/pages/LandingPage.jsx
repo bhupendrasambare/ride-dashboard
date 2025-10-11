@@ -34,7 +34,7 @@ const LandingPage = () => {
       {/* ===== Navbar ===== */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid container">
-          <a className="navbar-brand fw-bold" href="#">
+          <a className="navbar-brand fw-bold">
             Data Insights Hub
           </a>
           <div className="d-flex">
@@ -183,21 +183,21 @@ const LandingPage = () => {
           </div>
           <div>
             <h6 className="fw-bold">📧 Email</h6>
-            <p>bhupendra@example.com</p>
+            <p>bhupendrasam1404@gmail.com</p>
           </div>
           <div>
             <h6 className="fw-bold">📞 Contact</h6>
-            <p>+91-9876543210</p>
+            <p>+91-9516138020</p>
           </div>
           <div>
             <h6 className="fw-bold">🌐 GitHub</h6>
             <a
-              href="https://github.com/bhupendra"
+              href="https://github.com/bhupendrasambare"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white text-decoration-none"
             >
-              github.com/bhupendra
+              github.com/bhupendrasambare
             </a>
           </div>
         </div>

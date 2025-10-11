@@ -70,12 +70,6 @@ const Login = () => {
           <div className="login-login-wrap p-5">
             <h3 className="mb-4 text-center">{showLogin ? "Sign In" : "Register"}</h3>
 
-            {/* Social icons */}
-            <div className="d-flex justify-content-center mb-4 login-social-media">
-              <a href="#"><FaFacebook /></a>
-              <a href="#"><FaTwitter /></a>
-            </div>
-
             {/* Bootstrap Alert */}
             {alert.message && (
               <div
