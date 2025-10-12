@@ -6,6 +6,7 @@ import "./App.css"
 import Login from './pages/Login';
 import { ToastContainer, Zoom } from 'react-toastify';
 import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/login" element={<Login />} />
+      </Routes>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
