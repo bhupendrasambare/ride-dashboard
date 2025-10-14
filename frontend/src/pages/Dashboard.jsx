@@ -10,10 +10,10 @@ import TrendForecastChart from "/src/components/TrendForecastChart";
 
 const mockData = [
   { Date: "2025-10-01", BookingStatus: "Completed", VehicleType: "SUV", BookingValue: 450, DriverRatings: 4.8, CustomerRating: 4.7, PaymentMethod: "UPI" },
-  { Date: "2025-10-02", BookingStatus: "Cancelled", VehicleType: "Sedan", BookingValue: 0, DriverRatings: 4.0, CustomerRating: 3.9, PaymentMethod: "Cash" },
-  { Date: "2025-10-03", BookingStatus: "Completed", VehicleType: "Bike", BookingValue: 120, DriverRatings: 4.9, CustomerRating: 5.0, PaymentMethod: "Card" },
   { Date: "2025-10-04", BookingStatus: "Completed", VehicleType: "SUV", BookingValue: 500, DriverRatings: 4.6, CustomerRating: 4.5, PaymentMethod: "UPI" },
   { Date: "2025-10-05", BookingStatus: "Incomplete", VehicleType: "Sedan", BookingValue: 200, DriverRatings: 4.3, CustomerRating: 4.2, PaymentMethod: "Cash" },
+  { Date: "2025-10-02", BookingStatus: "Cancelled", VehicleType: "Sedan", BookingValue: 0, DriverRatings: 4.0, CustomerRating: 3.9, PaymentMethod: "Cash" },
+  { Date: "2025-10-03", BookingStatus: "Completed", VehicleType: "Bike", BookingValue: 120, DriverRatings: 4.9, CustomerRating: 5.0, PaymentMethod: "Card" },
 ];
 
 const Dashboard = () => {
