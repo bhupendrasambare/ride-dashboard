@@ -91,12 +91,12 @@ const Dashboard = () => {
                 <Col md={6}><VehicleTypeChart data={filteredData} /></Col>
             </Row>
             <Row>
-                <Col md={6}><BookingValueChart data={filteredData} /></Col>
-                <Col md={6}><TrendForecastChart data={filteredData} /></Col>
-            </Row>
-            <Row>
                 <Col md={6}><RatingsChart data={filteredData} /></Col>
                 <Col md={6}><PaymentMethodChart data={filteredData} /></Col>
+            </Row>
+            <Row>
+                <Col md={6}><BookingValueChart data={filteredData} /></Col>
+                <Col md={6}><TrendForecastChart data={filteredData} /></Col>
             </Row>
         </div>
 
