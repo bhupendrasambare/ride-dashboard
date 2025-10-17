@@ -42,7 +42,13 @@ const Dashboard = () => {
         <h3 className="mb-4 text-center">Uber Ride Analytics Dashboard</h3>
 
         <div className="container">
-            
+
+          <select class="form-select" aria-label="Default select example">
+            <option selected>Open this select menu</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </select>
             <div className="d-flex">
                 <Row className="mb-4 shadow-lg rounded-3 py-3 w-100 d-flex justify-content-around">
                     <Col md={3}>
