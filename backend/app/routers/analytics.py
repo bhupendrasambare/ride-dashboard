@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/rides", tags=["Rides Analysis"])
 
-DATA_PATH = "./backend/data/rides.csv"
+DATA_PATH = "/Users/bhupendrasam1404/Project/Python/fast-api/ride-dashboard/backend/data/dataset.csv"
 
 class TrainResponse(BaseModel):
     total_records: int
