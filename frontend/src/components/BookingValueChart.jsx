@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const BookingValueChart = ({ filters }) => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const BookingValueChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/booking-value?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/booking-value?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {
