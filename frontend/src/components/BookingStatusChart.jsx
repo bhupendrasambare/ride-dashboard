@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -12,7 +13,7 @@ const BookingStatusChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/booking-status?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/booking-status?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {

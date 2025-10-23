@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 from pydantic import BaseModel
 from datetime import datetime
 
-router = APIRouter(prefix="/rides", tags=["Rides Analysis"])
+router = APIRouter(prefix="/api/v1/rides", tags=["Rides Analysis"])
 
 DATA_PATH = "/Users/bhupendrasam1404/Project/Python/fast-api/ride-dashboard/backend/data/dataset.csv"
 
