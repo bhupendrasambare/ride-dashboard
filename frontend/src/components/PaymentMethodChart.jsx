@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const COLORS = ["#FF8042", "#00C49F", "#0088FE", "#FFBB28"];
 
@@ -12,7 +13,7 @@ const PaymentMethodChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/payment-method?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/payment-method?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {
