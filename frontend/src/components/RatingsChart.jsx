@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const RatingsChart = ({ filters }) => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const RatingsChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/ratings?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/ratings?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {
