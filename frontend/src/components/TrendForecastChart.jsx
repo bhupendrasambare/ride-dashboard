@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const TrendForecastChart = ({ filters }) => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const TrendForecastChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/trend-forecast?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/trend-forecast?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {
