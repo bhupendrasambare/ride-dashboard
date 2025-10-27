@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Spinner } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BASE_URL } from "../services/urls"
 
 const VehicleTypeChart = ({ filters }) => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const VehicleTypeChart = ({ filters }) => {
     setLoading(true);
     try {
       const params = new URLSearchParams(filters);
-      const response = await fetch(`http://localhost:8000/api/vehicle-type?${params}`);
+      const response = await fetch(`${BASE_URL}/rides/vehicle-type?${params}`);
       const result = await response.json();
       setData(result);
     } catch (err) {
