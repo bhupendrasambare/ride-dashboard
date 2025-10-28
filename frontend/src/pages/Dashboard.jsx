@@ -73,7 +73,7 @@ const Dashboard = () => {
       </Row>
       <Row>
         <Col md={6}><BookingValueChart filters={filters} /></Col>
-        <Col md={6}><TrendForecastChart filters={filters} /></Col>
+        {/* <Col md={6}><TrendForecastChart filters={filters} /></Col> */}
       </Row>
     </div>
   );
