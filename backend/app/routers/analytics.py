@@ -133,14 +133,29 @@ def booking_trend_forecast(
 ):
     df = load_data()
     df = apply_filters(df, start_date, end_date, vehicle_type, booking_status, payment_method)
+
     df["Booking Value"] = pd.to_numeric(df["Booking Value"], errors="coerce")
     df = df.dropna(subset=["Date", "Booking Value"])
-    forecast = []
-    for _, row in df.iterrows():
-        forecast.append({
+
+    # Convert Date column to datetime
+    df["Date"] = pd.to_datetime(df["Date"])
+
+    # ⏬ Downsample: group by day (or week)
+    df = (
+        df.groupby(df["Date"].dt.to_period("D"))
+        .agg({"Booking Value": "mean"})
+        .reset_index()
+    )
+    df["Date"] = df["Date"].dt.to_timestamp()
+
+    forecast = [
+        {
             "Date": row["Date"].strftime("%Y-%m-%d"),
-            "BookingValue": row["Booking Value"] + random.uniform(-50, 50)
-        })
+            "BookingValue": row["Booking Value"] + random.uniform(-50, 50),
+        }
+        for _, row in df.iterrows()
+    ]
+
     return forecast
 
 
