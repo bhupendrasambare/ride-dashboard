@@ -19,14 +19,15 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-3">
-      <h3 className="mb-4 text-center">Uber Ride Analytics Dashboard</h3>
+    <div className="container">
+      <h3 className="my-4 text-center">Uber Ride Analytics Dashboard</h3>
 
-      <Row className="mb-4 shadow-lg rounded-3 py-3 w-100 d-flex justify-content-around">
+      <Row className="mb-4 w-100 d-flex justify-content-around">
         <Col md={3}>
           <Form.Group>
             <Form.Label>Start Date</Form.Label>
             <Form.Control
+             className="shadow-lg rounded-5 border-0 mb-4 py-3 px-2"
               type="date"
               name="startDate"
               value={filters.startDate}
@@ -38,6 +39,7 @@ const Dashboard = () => {
           <Form.Group>
             <Form.Label>End Date</Form.Label>
             <Form.Control
+             className="shadow-lg rounded-5 border-0 mb-4 py-3 px-2"
               type="date"
               name="endDate"
               value={filters.endDate}
@@ -49,6 +51,7 @@ const Dashboard = () => {
           <Form.Group>
             <Form.Label>Vehicle Type</Form.Label>
             <Form.Select
+             className="shadow-lg rounded-5 border-0 mb-4 py-3 px-2"
               name="vehicleType"
               value={filters.vehicleType}
               onChange={handleFilterChange}
@@ -64,16 +67,16 @@ const Dashboard = () => {
 
       {/* Charts */}
       <Row>
-        <Col md={6}><BookingStatusChart filters={filters} /></Col>
+        <Col md={6}><PaymentMethodChart filters={filters} /></Col>
         <Col md={6}><VehicleTypeChart filters={filters} /></Col>
       </Row>
       <Row>
+        <Col md={6}><BookingStatusChart filters={filters} /></Col>
         <Col md={6}><RatingsChart filters={filters} /></Col>
-        <Col md={6}><PaymentMethodChart filters={filters} /></Col>
       </Row>
       <Row>
         <Col md={6}><BookingValueChart filters={filters} /></Col>
-        {/* <Col md={6}><TrendForecastChart filters={filters} /></Col> */}
+        <Col md={6}><TrendForecastChart filters={filters} /></Col>
       </Row>
     </div>
   );
