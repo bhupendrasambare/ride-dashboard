@@ -6,11 +6,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from pydantic import BaseModel
-from datetime import datetime
 
 router = APIRouter(prefix="/api/v1/rides", tags=["Rides Analysis"])
 
 DATA_PATH = "/Users/bhupendrasam1404/Project/Python/fast-api/ride-dashboard/backend/data/dataset.csv"
+
 
 class TrainResponse(BaseModel):
     total_records: int
@@ -19,18 +19,16 @@ class TrainResponse(BaseModel):
     correlation_keys: list
     model_score: float
 
+
 def load_data():
     if not os.path.exists(DATA_PATH):
         raise HTTPException(status_code=404, detail="CSV file not found")
-
     df = pd.read_csv(DATA_PATH, na_values=["null", "NULL", "NaN", ""])
     if "Date" in df.columns:
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-
     return df
 
 
-# Utility — apply filters
 def apply_filters(
     df: pd.DataFrame,
     start_date: str | None = None,
@@ -43,16 +41,15 @@ def apply_filters(
         df = df[df["Date"] >= pd.to_datetime(start_date, errors="coerce")]
     if end_date:
         df = df[df["Date"] <= pd.to_datetime(end_date, errors="coerce")]
-    if vehicle_type:
+    if vehicle_type and vehicle_type.lower() != "all":
         df = df[df["Vehicle Type"].str.lower() == vehicle_type.lower()]
-    if booking_status:
+    if booking_status and booking_status.lower() != "all":
         df = df[df["Booking Status"].str.lower() == booking_status.lower()]
-    if payment_method:
+    if payment_method and payment_method.lower() != "all":
         df = df[df["Payment Method"].str.lower() == payment_method.lower()]
     return df
 
 
-# 1️⃣ Booking status distribution
 @router.get("/booking-status")
 def booking_status_distribution(
     start_date: str | None = Query(None),
@@ -67,7 +64,6 @@ def booking_status_distribution(
     return data.to_dict(orient="records")
 
 
-# 2️⃣ Booking value trend
 @router.get("/booking-value")
 def booking_value_trend(
     start_date: str | None = Query(None),
@@ -85,7 +81,6 @@ def booking_value_trend(
     return daily_values.to_dict(orient="records")
 
 
-# 3️⃣ Payment method distribution
 @router.get("/payment-method")
 def payment_method_distribution(
     start_date: str | None = Query(None),
@@ -100,7 +95,35 @@ def payment_method_distribution(
     return data.to_dict(orient="records")
 
 
-# 4️⃣ Ratings trend
+@router.get("/trend-forecast")
+def booking_trend_forecast(
+    start_date: str | None = Query(None),
+    end_date: str | None = Query(None),
+    vehicle_type: str | None = Query(None),
+    booking_status: str | None = Query(None),
+    payment_method: str | None = Query(None),
+):
+    df = load_data()
+    df = apply_filters(df, start_date, end_date, vehicle_type, booking_status, payment_method)
+    df["Booking Value"] = pd.to_numeric(df["Booking Value"], errors="coerce")
+    df = df.dropna(subset=["Date", "Booking Value"])
+    df["Date"] = pd.to_datetime(df["Date"])
+    df = (
+        df.groupby(df["Date"].dt.to_period("D"))
+        .agg({"Booking Value": "mean"})
+        .reset_index()
+    )
+    df["Date"] = df["Date"].dt.to_timestamp()
+    forecast = [
+        {
+            "Date": row["Date"].strftime("%Y-%m-%d"),
+            "BookingValue": round(row["Booking Value"] + random.uniform(-50, 50), 2),
+        }
+        for _, row in df.iterrows()
+    ]
+    return forecast
+
+
 @router.get("/ratings")
 def ratings_trend(
     start_date: str | None = Query(None),
@@ -119,47 +142,11 @@ def ratings_trend(
         .reset_index()
     )
     avg_ratings.columns = ["Date", "DriverRatings", "CustomerRating"]
+    avg_ratings["DriverRatings"] = avg_ratings["DriverRatings"].round(2)
+    avg_ratings["CustomerRating"] = avg_ratings["CustomerRating"].round(2)
     return avg_ratings.to_dict(orient="records")
 
 
-# 5️⃣ Booking value forecast (simulated)
-@router.get("/trend-forecast")
-def booking_trend_forecast(
-    start_date: str | None = Query(None),
-    end_date: str | None = Query(None),
-    vehicle_type: str | None = Query(None),
-    booking_status: str | None = Query(None),
-    payment_method: str | None = Query(None),
-):
-    df = load_data()
-    df = apply_filters(df, start_date, end_date, vehicle_type, booking_status, payment_method)
-
-    df["Booking Value"] = pd.to_numeric(df["Booking Value"], errors="coerce")
-    df = df.dropna(subset=["Date", "Booking Value"])
-
-    # Convert Date column to datetime
-    df["Date"] = pd.to_datetime(df["Date"])
-
-    # ⏬ Downsample: group by day (or week)
-    df = (
-        df.groupby(df["Date"].dt.to_period("D"))
-        .agg({"Booking Value": "mean"})
-        .reset_index()
-    )
-    df["Date"] = df["Date"].dt.to_timestamp()
-
-    forecast = [
-        {
-            "Date": row["Date"].strftime("%Y-%m-%d"),
-            "BookingValue": row["Booking Value"] + random.uniform(-50, 50),
-        }
-        for _, row in df.iterrows()
-    ]
-
-    return forecast
-
-
-# 6️⃣ Vehicle type usage
 @router.get("/vehicle-type")
 def vehicle_type_usage(
     start_date: str | None = Query(None),
@@ -174,7 +161,6 @@ def vehicle_type_usage(
     return data.to_dict(orient="records")
 
 
-# 7️⃣ Train model on booking data
 @router.get("/train", response_model=TrainResponse)
 def train_ride_data(
     start_date: str | None = Query(None),
@@ -194,7 +180,6 @@ def train_ride_data(
 
     df["Booking Value"] = pd.to_numeric(df["Booking Value"], errors="coerce")
     df = df.dropna(subset=["Booking Value"])
-
     if df.empty:
         raise HTTPException(status_code=400, detail="No valid rows with 'Booking Value' found for training")
 
@@ -211,10 +196,8 @@ def train_ride_data(
 
     X = df_encoded.drop(columns=["Booking Value"])
     y = df_encoded["Booking Value"]
-
     X = X.replace([float("inf"), float("-inf")], None).dropna()
     X, y = X.align(y, join="inner", axis=0)
-
     if X.empty or y.empty:
         raise HTTPException(status_code=400, detail="Not enough valid data for training after cleaning")
 
@@ -222,7 +205,6 @@ def train_ride_data(
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     score = model.score(X_test, y_test)
-
     corr = df_encoded.corr(numeric_only=True)
     correlation_keys = corr["Booking Value"].dropna().sort_values(ascending=False).index.tolist()
 
@@ -231,5 +213,5 @@ def train_ride_data(
         numeric_columns=numeric_cols,
         categorical_columns=categorical_cols,
         correlation_keys=correlation_keys[:10],
-        model_score=round(score, 3)
+        model_score=round(score, 3),
     )
