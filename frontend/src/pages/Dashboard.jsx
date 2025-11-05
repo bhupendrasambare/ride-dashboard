@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Row, Col, Form } from "react-bootstrap";
 import BookingStatusChart from "../components/BookingStatusChart";
 import VehicleTypeChart from "../components/VehicleTypeChart";
@@ -8,22 +8,29 @@ import BookingValueChart from "../components/BookingValueChart";
 import TrendForecastChart from "../components/TrendForecastChart";
 
 const Dashboard = () => {
-    
   const [filters, setFilters] = useState({
     start_date: "1800-10-01",
     end_date: "2025-10-10",
     vehicle_type: "All",
   });
 
-  
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedFilters(filters);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [filters]);
+
   return (
     <div className="container">
       <h3 className="my-4 text-center fw-bold">Uber Ride Analytics Dashboard</h3>
-
 
       <Row className="mb-4 w-100 d-flex justify-content-around">
         <Col md={3}>
@@ -32,7 +39,7 @@ const Dashboard = () => {
             <Form.Control
               className="shadow-lg rounded-5 border-0 mb-4 py-3 px-2"
               type="date"
-              name="start_date" 
+              name="start_date"
               value={filters.start_date}
               onChange={handleFilterChange}
             />
@@ -57,7 +64,7 @@ const Dashboard = () => {
             <Form.Label className="fw-semibold">Vehicle Type</Form.Label>
             <Form.Select
               className="shadow-lg rounded-5 border-0 mb-4 py-3 px-2"
-              name="vehicle_type" 
+              name="vehicle_type"
               value={filters.vehicle_type}
               onChange={handleFilterChange}
             >
@@ -77,28 +84,28 @@ const Dashboard = () => {
       {/* 📊 Dashboard Charts */}
       <Row>
         <Col md={6}>
-          <PaymentMethodChart filters={filters} />
+          <PaymentMethodChart filters={debouncedFilters} />
         </Col>
         <Col md={6}>
-          <VehicleTypeChart filters={filters} />
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={6}>
-          <BookingStatusChart filters={filters} />
-        </Col>
-        <Col md={6}>
-          <RatingsChart filters={filters} />
+          <VehicleTypeChart filters={debouncedFilters} />
         </Col>
       </Row>
 
       <Row>
         <Col md={6}>
-          <BookingValueChart filters={filters} />
+          <BookingStatusChart filters={debouncedFilters} />
         </Col>
         <Col md={6}>
-          <TrendForecastChart filters={filters} />
+          <RatingsChart filters={debouncedFilters} />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={6}>
+          <BookingValueChart filters={debouncedFilters} />
+        </Col>
+        <Col md={6}>
+          <TrendForecastChart filters={debouncedFilters} />
         </Col>
       </Row>
     </div>
