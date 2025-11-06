@@ -6,11 +6,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter(prefix="/api/v1/rides", tags=["Rides Analysis"])
 
 DATA_PATH = "/Users/bhupendrasam1404/Project/Python/fast-api/ride-dashboard/backend/data/dataset.csv"
 
+DATA_FOLDER = os.getenv("DATA_FOLDER_PATH")
+if not DATA_FOLDER:
+    raise HTTPException(status_code=500, detail="DATA_FOLDER_PATH not found in environment variables")
 
 class TrainResponse(BaseModel):
     total_records: int
@@ -48,6 +54,68 @@ def apply_filters(
     if payment_method and payment_method.lower() != "all":
         df = df[df["Payment Method"].str.lower() == payment_method.lower()]
     return df
+
+@router.get("/files")
+def list_data_files():
+    """Return all CSV files inside the data folder"""
+    if not os.path.exists(DATA_FOLDER):
+        raise HTTPException(status_code=404, detail=f"Data folder not found at {DATA_FOLDER}")
+
+    files = []
+    for file_name in os.listdir(DATA_FOLDER):
+        file_path = os.path.join(DATA_FOLDER, file_name)
+        if os.path.isfile(file_path):
+            stats = os.stat(file_path)
+            files.append({
+                "file_name": file_name,
+                "file_path": file_path,
+                "size_kb": round(stats.st_size / 1024, 2),
+                "last_modified": os.path.getmtime(file_path)
+            })
+
+    if not files:
+        raise HTTPException(status_code=404, detail="No files found in the data folder")
+
+    return {"total_files": len(files), "files": files}
+
+@router.get("/file-info")
+def get_file_info(file_name: str | None = None):
+    """
+    Get total records and column details (name, dtype, null count) for a given CSV file.
+    If file_name is not provided, use the default dataset.csv.
+    """
+    if not DATA_FOLDER:
+        raise HTTPException(status_code=500, detail="DATA_FOLDER_PATH not configured")
+
+    # Default to dataset.csv if no file name is provided
+    file_name = file_name or "dataset.csv"
+    file_path = os.path.join(DATA_FOLDER, file_name)
+
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=f"File '{file_name}' not found in data folder")
+
+    try:
+        df = pd.read_csv(file_path, na_values=["null", "NULL", "NaN", ""])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading file: {e}")
+
+    # Prepare response data
+    columns_info = []
+    for col in df.columns:
+        columns_info.append({
+            "column_name": col,
+            "dtype": str(df[col].dtype),
+            "null_count": int(df[col].isnull().sum())
+        })
+
+    response = {
+        "file_name": file_name,
+        "total_records": int(len(df)),
+        "total_columns": len(df.columns),
+        "columns": columns_info
+    }
+
+    return response
 
 
 @router.get("/booking-status")
