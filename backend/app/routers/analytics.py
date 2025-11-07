@@ -7,6 +7,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from fastapi import UploadFile, File
+
 
 load_dotenv()
 
@@ -117,6 +119,51 @@ def get_file_info(file_name: str | None = None):
 
     return response
 
+
+@router.post("/upload-csv")
+async def upload_csv(file: UploadFile = File(...)):
+    """
+    Upload a new CSV file to the data folder.
+    Validates the file type, saves it, and returns file details.
+    """
+    if not DATA_FOLDER:
+        raise HTTPException(status_code=500, detail="DATA_FOLDER_PATH not configured")
+
+    # Ensure the file is a CSV
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Only CSV files are allowed")
+
+    # Create folder if not exists
+    os.makedirs(DATA_FOLDER, exist_ok=True)
+
+    file_path = os.path.join(DATA_FOLDER, file.filename)
+
+    # Save uploaded file
+    try:
+        with open(file_path, "wb") as buffer:
+            content = await file.read()
+            buffer.write(content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving file: {e}")
+
+    # Validate by loading into pandas
+    try:
+        df = pd.read_csv(file_path, na_values=["null", "NULL", "NaN", ""])
+    except Exception as e:
+        # Delete invalid file if it can't be read properly
+        os.remove(file_path)
+        raise HTTPException(status_code=400, detail=f"Invalid CSV file: {e}")
+
+    response = {
+        "message": "File uploaded successfully",
+        "file_name": file.filename,
+        "file_size_kb": round(len(content) / 1024, 2),
+        "total_records": int(len(df)),
+        "total_columns": len(df.columns),
+        "columns": list(df.columns)
+    }
+
+    return response
 
 @router.get("/booking-status")
 def booking_status_distribution(
