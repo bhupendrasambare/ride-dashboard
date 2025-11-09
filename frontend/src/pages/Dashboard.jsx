@@ -9,7 +9,7 @@ import TrendForecastChart from "../components/TrendForecastChart";
 
 const Dashboard = () => {
   const [filters, setFilters] = useState({
-    start_date: "1800-10-01",
+    start_date: "2000-10-01",
     end_date: "2025-10-10",
     vehicle_type: "All",
   });
