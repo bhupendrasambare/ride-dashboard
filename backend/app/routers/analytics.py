@@ -171,49 +171,12 @@ def booking_status_distribution(
     end_date: str | None = Query(None),
     vehicle_type: str | None = Query(None),
     payment_method: str | None = Query(None),
-    file_name: str | None = Query(None, description="Optional CSV file name to analyze"),
 ):
-    """
-    Analyze booking status distribution.
-    If `file_name` is provided, the analysis is done on that file from DATA_FOLDER.
-    Otherwise, the default dataset.csv from DATA_PATH is used.
-    """
-
-    # Determine which file to load
-    if file_name:
-        file_path = os.path.join(DATA_FOLDER, file_name)
-        if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail=f"File '{file_name}' not found in data folder")
-    else:
-        file_path = DATA_PATH
-
-    # Load CSV file
-    try:
-        df = pd.read_csv(file_path, na_values=["null", "NULL", "NaN", ""])
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error reading file: {e}")
-
-    # Convert date if present
-    if "Date" in df.columns:
-        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-
-    # Apply filters
+    df = load_data()
     df = apply_filters(df, start_date, end_date, vehicle_type, None, payment_method)
-
-    # Validate required column
-    if "Booking Status" not in df.columns:
-        raise HTTPException(status_code=400, detail="Column 'Booking Status' not found in dataset")
-
-    # Compute distribution
     data = df["Booking Status"].value_counts().reset_index()
     data.columns = ["BookingStatus", "count"]
-
-    return {
-        "file_analyzed": os.path.basename(file_path),
-        "total_records": len(df),
-        "distribution": data.to_dict(orient="records")
-    }
-
+    return data.to_dict(orient="records")
 
 
 @router.get("/booking-value")
