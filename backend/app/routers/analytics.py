@@ -12,7 +12,7 @@ from fastapi import UploadFile, File
 
 load_dotenv()
 
-router = APIRouter(prefix="/api/v1/rides", tags=["Rides Analysis"])
+router = APIRouter(prefix="/api/v1/rides", tags=["Rides Details"])
 
 DATA_PATH = "/Users/bhupendrasam1404/Project/Python/fast-api/ride-dashboard/backend/data/dataset.csv"
 
