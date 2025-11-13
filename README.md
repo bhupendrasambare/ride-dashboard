@@ -1,122 +1,89 @@
-# 🧭 Data Insights Hub
+# 🚀 Data Insights Hub
 
-A **full-stack Python + React.js application** for analyzing rides data from CSV files.
-This project provides **user authentication**, **data visualization**, and **insight generation** using Python-powered analytics and a modern React-based frontend.
+A **Full-Stack Data Analytics Platform** built with **FastAPI**, **MongoDB**, and **React (Vite)** for secure CSV-based data analysis, visualization, and insights generation.
+
+This project empowers users to **upload ride data**, **analyze it in real-time**, and **visualize insights interactively** — all within a modern, authenticated web experience.
 
 ---
 
-## 🚀 Features
+## 🖼️ Screenshots
 
-### 🧮 Backend (FastAPI + MongoDB)
+| Swagger API Docs | Login Page | Dashboard |
+| :---------------: | :---------: | :---------: |
+| ![Swagger UI](./screenshots/swagger.png) | ![Login](./screenshots/login.png) | ![Dashboard](./screenshots/dashboard.png) |
 
-* User **registration and login** with JWT authentication
-* CSV **upload and analysis** using **Pandas** and **NumPy**
-* **Matplotlib** visualizations generated dynamically
-* MongoDB integration with **Motor** (async driver)
-* Secure password hashing using **Bcrypt**
-* Environment-based configuration with `.env`
-* **Swagger UI** and **ReDoc** for API documentation
+---
+
+## ⚡ Overview
+
+### 🔧 Backend (FastAPI + MongoDB)
+- 🧩 **JWT Authentication** (Login & Signup)
+- 📂 **CSV Upload & Parsing** using *Pandas & NumPy*
+- 📊 **Dynamic Graph Generation** via *Matplotlib*
+- ⚡ **Async MongoDB Operations** using *Motor*
+- 🔐 **Secure Password Hashing** with *Bcrypt*
+- 🌍 **Auto API Docs**: Swagger UI & ReDoc
+- 🔧 Configurable with `.env`
 
 ### 💻 Frontend (React + Vite)
-
-* Modern **React 19** frontend built with **Vite**
-* Responsive UI using **Bootstrap 5** and **React Bootstrap**
-* **Protected routes** based on user login
-* Interactive dashboards using **Recharts**
-* Global state management with **Zustand**
-* **Toast notifications** for user feedback
-* Clean and animated landing page (see sample below)
+- 🧠 Built using **React 19 + Vite** for performance
+- 🪶 **Responsive UI** powered by *Bootstrap 5* + *React Bootstrap*
+- 🔒 **Protected Routes** using login state
+- 📊 **Interactive Charts** with *Recharts*
+- ⚙️ **Global State** handled via *Zustand*
+- 🎉 **Toast Notifications** for user actions
+- 🌈 Animated landing and dashboard pages with *Framer Motion*
 
 ---
 
 ## 🧩 Tech Stack
 
-| Layer             | Technologies                                                        |
-| ----------------- | ------------------------------------------------------------------- |
-| **Frontend**      | React 19, Vite, Bootstrap 5, React Router, Zustand, Axios, Recharts |
-| **Backend**       | FastAPI, Uvicorn, Motor (MongoDB), Pandas, NumPy, Matplotlib        |
-| **Auth**          | JWT (PyJWT), Bcrypt                                                 |
-| **Database**      | MongoDB                                                             |
-| **Visualization** | Pandas + Matplotlib                                                 |
-| **Tools**         | ESLint, dotenv, GitHub Actions ready                                |
+| Layer | Technologies |
+|-------|---------------|
+| **Frontend** | React 19, Vite, Bootstrap 5, React Router, Zustand, Axios, Recharts |
+| **Backend** | FastAPI, Uvicorn, Motor (MongoDB), Pandas, NumPy, Matplotlib |
+| **Authentication** | JWT (PyJWT), Bcrypt |
+| **Database** | MongoDB |
+| **Visualization** | Pandas + Matplotlib |
+| **Dev Tools** | ESLint, dotenv, GitHub Actions-ready |
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup Guide
 
-### 🔹 1. Clone the Repository
-
+### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/your-username/data-insights-hub.git
 cd data-insights-hub
-```
+````
 
 ---
 
-### 🔹 2. Backend Setup (FastAPI)
+### 2️⃣ Backend Setup (FastAPI)
 
-#### a. Navigate to backend
+#### ➤ Navigate to Backend Folder
 
 ```bash
 cd backend
 ```
 
-#### b. Create a virtual environment
+#### ➤ Create Virtual Environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # Mac/Linux
-venv\Scripts\activate     # Windows
+source venv/bin/activate      # Mac/Linux
+venv\Scripts\activate         # Windows
 ```
 
-#### c. Install dependencies
+#### ➤ Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### d. Run the FastAPI server
+#### ➤ Configure Environment Variables
 
-```bash
-uvicorn main:app --reload
-```
-
-#### e. API Docs available at:
-
-* Swagger UI → [http://localhost:8000/docs](http://localhost:8000/docs)
-* ReDoc → [http://localhost:8000/redoc](http://localhost:8000/redoc)
-
----
-
-### 🔹 3. Frontend Setup (React + Vite)
-
-#### a. Navigate to frontend
-
-```bash
-cd ../frontend
-```
-
-#### b. Install dependencies
-
-```bash
-npm install
-```
-
-#### c. Run the development server
-
-```bash
-npm run dev
-```
-
-#### d. Visit:
-
-👉 [http://localhost:5173](http://localhost:5173)
-
----
-
-## 🔐 Environment Variables
-
-Create a `.env` file in the backend folder:
+Create a `.env` file inside the backend directory:
 
 ```bash
 MONGO_URL=mongodb://localhost:27017/ridedata
@@ -124,37 +91,112 @@ JWT_SECRET=your_secret_key
 JWT_ALGORITHM=HS256
 ```
 
+#### ➤ Run the Server
+
+```bash
+uvicorn main:app --reload
+```
+
+#### ➤ Access API Docs
+
+* Swagger UI → [http://localhost:8000/docs](http://localhost:8000/docs)
+* ReDoc → [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+---
+
+### 3️⃣ Frontend Setup (React + Vite)
+
+#### ➤ Navigate to Frontend Folder
+
+```bash
+cd ../frontend
+```
+
+#### ➤ Install Dependencies
+
+```bash
+npm install
+```
+
+#### ➤ Start Development Server
+
+```bash
+npm run dev
+```
+
+#### ➤ Access Frontend
+
+👉 [http://localhost:5173](http://localhost:5173)
+
 ---
 
 ## 📊 CSV Analysis Workflow
 
-1. Login using your credentials (JWT-secured)
-2. Upload a rides CSV file (columns like `Date`, `Time`, `Pickup`, `Drop`, `Duration`, `Fare`)
-3. Backend analyzes it using **Pandas**:
+1. **Login / Register** with JWT-secured authentication
+2. **Upload your CSV** file (fields: `Date`, `Time`, `Pickup`, `Drop`, `Duration`, `Fare`)
+3. **Backend Processing** using *Pandas*:
 
-   * Compute ride counts, durations, fare trends
-   * Generate graphs (e.g. daily rides, avg fare trends)
-4. Frontend displays visualizations using **Recharts**
+   * Rides count & duration statistics
+   * Fare trend analysis
+   * Graph generation with *Matplotlib*
+4. **Frontend Visualization** with *Recharts* for dynamic charts
+
+---
+
+## 🌟 Folder Structure
+
+```
+data-insights-hub/
+│
+├── backend/
+│   ├── main.py
+│   ├── routers/
+│   │   ├── auth.py
+│   │   ├── rides.py
+│   ├── models/
+│   ├── utils/
+│   ├── requirements.txt
+│   └── .env
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── store/
+│   │   └── services/
+│   ├── public/
+│   └── package.json
+│
+└── screenshots/
+    ├── swagger.png
+    ├── login.png
+    └── dashboard.png
+```
 
 ---
 
 ## 🧠 Future Enhancements
 
-* Add **AI-powered trend prediction**
-* Implement **user roles** (admin, analyst)
-* Export analytics as **PDF reports**
-* Add **real-time dashboards**
+* 🤖 **AI-powered predictions** (ride trends, fare forecasting)
+* 👥 **Role-based access control** (Admin / Analyst)
+* 📄 **Export analytics** to PDF / Excel
+* 🕒 **Live dashboard updates** with WebSockets
 
 ---
 
 ## 👨‍💻 Developer
 
 **Bhupendra Sambare**
+💼 Full Stack Developer — Java | Spring Boot | React | FastAPI
 📧 [bhupendrasam1404@gmail.com](mailto:bhupendrasam1404@gmail.com)
 🌐 [github.com/bhupendrasambare](https://github.com/bhupendrasambare)
 
 ---
 
-## 🪄 Sample Landing Page
+## 🪄 Demo Landing Page
 
-The `LandingPage.jsx` highlights the technologies used — powered by **Bootstrap Carousel**, **React Router**, and **Framer Motion** animations for smooth transitions.
+The landing page is built using **Bootstrap Carousel**, **Framer Motion**, and **React Router** for smooth navigation and dynamic transitions — offering a modern and responsive UI experience.
+
+---
+
+> 💡 *“Turning raw CSVs into actionable insights — fast, secure, and visual.”*
