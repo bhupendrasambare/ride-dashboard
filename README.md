@@ -147,30 +147,72 @@ npm run dev
 
 ```
 data-insights-hub/
-│
-├── backend/
-│   ├── main.py
-│   ├── routers/
-│   │   ├── auth.py
-│   │   ├── rides.py
-│   ├── models/
-│   ├── utils/
+├── backend/                        # FastAPI backend
+│   ├── app/
+│   │   ├── routers/                # API route handlers
+│   │   │   ├── auth.py
+│   │   │   ├── users.py
+│   │   │   └── analytics.py
+│   │   ├── models/                 # Pydantic schemas & Mongo models
+│   │   │   ├── users.py
+│   │   │   └── schemas.py
+│   │   ├── services/               # Business logic & database interactions
+│   │   │   └── user_service.py
+│   │   ├── utils/                  # Utility functions (JWT, security, etc.)
+│   │   │   ├── auth.py
+│   │   │   └── security.py
+│   │   ├── database.py             # MongoDB connection setup
+│   │   └── __init__.py
+│   ├── data/                       # Default data and uploaded CSV files
+│   │   └── dataset.csv
+│   ├── main.py                     # FastAPI entry point
 │   ├── requirements.txt
-│   └── .env
+│   └── .env                        # Environment configuration
 │
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── store/
-│   │   └── services/
+├── frontend/                       # React (Vite) frontend
 │   ├── public/
-│   └── package.json
+│   │   └── vite.svg
+│   ├── src/
+│   │   ├── assets/
+│   │   │   ├── css/
+│   │   │   │   └── login.css
+│   │   │   ├── login-box.jpg
+│   │   │   └── react.svg
+│   │   ├── components/             # Reusable UI components
+│   │   │   ├── BookingStatusChart.jsx
+│   │   │   ├── BookingValueChart.jsx
+│   │   │   ├── PaymentMethodChart.jsx
+│   │   │   ├── RatingsChart.jsx
+│   │   │   ├── TrendForecastChart.jsx
+│   │   │   └── VehicleTypeChart.jsx
+│   │   ├── pages/                  # App pages (Login, Dashboard, Landing)
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── LandingPage.jsx
+│   │   │   └── Login.jsx
+│   │   ├── services/               # API calls and endpoints
+│   │   │   ├── api.js
+│   │   │   └── urls.js
+│   │   ├── store/                  # Zustand global state management
+│   │   │   └── authStore.js
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── App.css
+│   │   └── index.css
+│   ├── package.json
+│   ├── vite.config.js
+│   └── eslint.config.js
 │
-└── screenshots/
-    ├── swagger.png
-    ├── login.png
-    └── dashboard.png
+├── notebooks/
+│   └── exploration.ipynb           # Jupyter notebook for data exploration
+│
+├── screenshots/                    # Screenshots for documentation
+│   ├── swagger.png
+│   ├── login.png
+│   └── dashboard.png
+│
+├── README.md
+├── .gitignore
+└── structure.txt
 ```
 
 ---
