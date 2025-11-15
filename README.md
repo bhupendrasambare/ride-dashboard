@@ -1,4 +1,4 @@
-# 🚀 Data Insights Hub
+# 🚀 Data Insights
 
 A **Full-Stack Data Analytics Platform** built with **FastAPI**, **MongoDB**, and **React (Vite)** for secure CSV-based data analysis, visualization, and insights generation.
 
